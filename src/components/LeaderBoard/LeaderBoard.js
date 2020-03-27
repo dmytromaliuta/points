@@ -7,7 +7,7 @@ class LeaderBoard extends React.Component {
         return (
             <div className="leader-board">
                 <div className="board-wrap">
-                    <h4>LeaderBoard</h4>
+                    <h4>Leader board</h4>
                     <LeaderInfo />
                     <LeaderInfo />
                     <LeaderInfo />
