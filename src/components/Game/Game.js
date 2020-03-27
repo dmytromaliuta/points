@@ -6,6 +6,7 @@ import GameField from '../GameField/GameField'
 class Game extends React.Component {
     constructor(props) {
         super(props);
+        this.fieldChange = this.fieldChange.bind(this)
         this.renderField = this.renderField.bind(this);
         this.gameStart = this.gameStart.bind(this);
         this.handleClick = this.handleClick.bind(this);
@@ -18,7 +19,9 @@ class Game extends React.Component {
             message: '',
             index: 0,
             isTimerWas: false,
-            timerBeforeGame: false
+            timerBeforeGame: false,
+            gameStart: false,
+            clicked: false
         }
     }
     render(props) {
@@ -42,46 +45,38 @@ class Game extends React.Component {
         });
     }
     handleClick(index){
+        if(!this.state.gameStart) return;
         let arr = this.state.fieldarray;
         if(this.state.timerBeforeGame) {
-            if(this.state.isTimerWas) {
-                arr[this.state.results[this.state.index]] = 3;
-            }
-            if(index === this.state.results[this.state.index]) {
+            if(index === this.state.results[this.state.index] && !this.state.isTimerWas) {
                 arr[index] = 2;
                 this.setState({
-                    fieldarray: arr
-                })
-            } else {
+                    fieldarray: arr,
+                    clicked: true
+                });
+                console.log("next green")
+            } else if(index === this.state.results[this.state.index] && this.state.isTimerWas) {
                 
+                return
+            } else {
                 arr[index] = 3;
                 this.setState({
                     fieldarray: arr
                 })
             }
         } else {
-            arr[index] = 3;
-            this.setState({
-                fieldarray: arr
-            })
             return
         }
-        // if(this.state.timerBeforeGame) {
-        //     let arr = this.state.fieldarray;
-        //     arr[index] = 3;
-        //     this.setState({
-        //         fieldarray: arr
-        //     })
-        // } else {
-        //     let arr = this.state.fieldarray;
-        //     arr[index] = 3;
-        //     this.setState({
-        //         fieldarray: arr
-        //     })
-        // }
+        
     }
     fieldChange(){
-        
+        let arr = this.state.fieldarray;
+        arr[this.state.results[this.state.index]] = 1;
+        this.setState({
+            fieldarray: arr,
+            index: this.state.index++,
+            timerBeforeGame: true
+        })
     }
     gameStart(name){
         if(!name.length) {
@@ -96,17 +91,23 @@ class Game extends React.Component {
         for (i = 0; i < this.state.fieldarray.length; i++) results.push(arr.splice(Math.floor(Math.random() * (arr.length)), 1)[0]);
         this.setState({
             message: '',
+            gameStart: true,
             results
         });
         setTimeout(() => {
-            let arr = this.state.fieldarray;
-            arr[this.state.results[this.state.index]] = 1;
+            this.fieldChange()
             this.setState({
-                fieldarray: arr,
-                index: this.state.index++,
                 timerBeforeGame: true
             })
             setTimeout(() => {
+                if(this.state.fieldarray[this.state.results[this.state.index]] === 1) {
+                    let arr = this.state.fieldarray;
+                    arr[this.state.results[this.state.index]] = 3;
+                    this.setState({
+                        fieldarray: arr
+                    })
+                    console.log("next red")
+                }
                 this.setState({
                     isTimerWas: true
                 })
