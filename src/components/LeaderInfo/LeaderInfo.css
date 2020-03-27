@@ -1,0 +1,16 @@
+.leader-info {
+    height: 60px;
+    background: #cfd8dc;
+    line-height: 60px;
+    color: #99a8ad;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 22px;
+    margin-bottom: 3px;
+}
+.leader-info .name {
+    float: left;
+}
+.leader-info .time {
+    float: right;
+}

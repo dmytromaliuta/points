@@ -1,0 +1,49 @@
+.select {
+    position: relative;
+}
+.select-btn {
+    width: 205px;
+    height: 50px;
+    background: #cfd8dc;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    color: #99a8ad;
+    box-sizing: border-box;
+    padding-left: 20px;
+}
+.select-btn span {
+}
+.select-btn i{
+    position: absolute;
+    right: 25px;
+    color: #a6a9ab;
+}
+.select-block {
+    background: #cfd8dc;
+    width: 205px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: #99a8ad;
+    text-transform: capitalize;
+    position: absolute;
+    top: 55px;
+}
+.select-block ul li:hover {
+    background: #7b8d93;
+    color: #efefef;
+}
+.select-block ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box; 
+}
+.select-block ul li{
+    padding: 10px 0;
+    padding-left: 20px;
+    cursor: pointer;
+}

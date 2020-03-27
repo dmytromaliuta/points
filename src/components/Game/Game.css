@@ -1,0 +1,15 @@
+.game-wrap {
+    width: 625px;
+    box-sizing: border-box;
+    height: 800px;
+}
+.winner {
+    color: #858585;
+    font-size: 20px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 43px;
+    margin-bottom: 30px;
+}
