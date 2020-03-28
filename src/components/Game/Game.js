@@ -6,10 +6,11 @@ import GameField from '../GameField/GameField'
 class Game extends React.Component {
     constructor(props) {
         super(props);
-        this.fieldChange = this.fieldChange.bind(this)
+        this.gamePlay = this.gamePlay.bind(this)
         this.renderField = this.renderField.bind(this);
         this.gameStart = this.gameStart.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.state = {
             gameSettingSelect: {
                 field: 5,
@@ -17,11 +18,12 @@ class Game extends React.Component {
             },
             fieldarray: new Array(25).fill(0),
             message: '',
+            playerName: '',
             index: 0,
-            isTimerWas: false,
-            timerBeforeGame: false,
+            btnname: 'Play',
             gameStart: false,
-            clicked: false
+            playerScore: 0,
+            computerScore: 0
         }
     }
     render(props) {
@@ -29,7 +31,9 @@ class Game extends React.Component {
             <div className="game-wrap">
                 <Controls renderField={this.renderField}
                           gamesetting={this.props.gamesetting}
-                          gameStart={this.gameStart} />
+                          gameStart={this.gameStart}
+                          handleChange={this.handleChange}
+                          btnname={this.state.btnname} />
                 <div className="winner">
                     {this.state.message}
                 </div>
@@ -40,46 +44,99 @@ class Game extends React.Component {
     renderField(name) {
         let length = this.props.gamesetting[name].field || 5;
         this.setState({
+            gameStart: false,
+            message: '',
+            btnname: 'Play',
             gameSettingSelect: this.props.gamesetting[name],
-            fieldarray: new Array(length*length).fill(0)
+            fieldarray: new Array(length*length).fill(0),
         });
     }
+    handleChange(name){
+        this.setState({
+            playerName: name
+        })
+    }
     handleClick(index){
+        console.log("ads");
         if(!this.state.gameStart) return;
+        if(this.state.fieldarray[this.state.results[this.state.index]] === 2 || this.state.fieldarray[this.state.results[this.state.index]] === 3) return;
         let arr = this.state.fieldarray;
-        if(this.state.timerBeforeGame) {
-            if(index === this.state.results[this.state.index] && !this.state.isTimerWas) {
-                arr[index] = 2;
-                this.setState({
-                    fieldarray: arr,
-                    clicked: true
-                });
-                console.log("next green")
-            } else if(index === this.state.results[this.state.index] && this.state.isTimerWas) {
-                
-                return
-            } else {
-                arr[index] = 3;
-                this.setState({
-                    fieldarray: arr
-                })
-            }
-        } else {
-            return
+        if(this.state.fieldarray[index] === 0) {
+            arr[index] = 3;
+            let results = this.state.results; 
+            results.splice(results.indexOf(index), 1);
+            arr[this.state.results[this.state.index]] = 1;
+            this.setState({
+                fieldarray: arr,
+                computerScore: this.state.computerScore + 1
+            });
+        } else if (this.state.fieldarray[index] === 1){
+            arr[index] = 2;
+            this.setState({
+                fieldarray: arr
+            });
         }
         
     }
-    fieldChange(){
+    gamePlay(){
+        let limit = this.state.gameSettingSelect.field;
+        limit = Math.round(limit*limit/2) - 1;
+        console.log(limit)
+        if(this.state.playerScore > limit){
+            console.log("plater")
+            this.setState({
+                message: this.state.playerName + " won",
+                btnname: 'Play again',
+                gameStart: false
+            })
+            return
+        }
+        if(this.state.computerScore > limit){
+            console.log("pc")
+            this.setState({
+                message: "Computer Ai won",
+                btnname: 'Play again',
+                gameStart: false
+            })
+            return
+        }
         let arr = this.state.fieldarray;
         arr[this.state.results[this.state.index]] = 1;
         this.setState({
-            fieldarray: arr,
-            index: this.state.index++,
-            timerBeforeGame: true
+            fieldarray: arr
         })
+        setTimeout(() => {
+            if(!this.state.gameStart) return;
+            if(arr[this.state.results[this.state.index]] === 1) {
+                arr[this.state.results[this.state.index]] = 3;
+                this.setState({
+                    fieldarray: arr,
+                    index: this.state.index + 1,
+                    computerScore: this.state.computerScore + 1
+                })
+                this.gamePlay();
+            } 
+            if(arr[this.state.results[this.state.index]] === 2) {
+                this.setState({
+                    index: this.state.index + 1,
+                    playerScore: this.state.playerScore + 1
+                })
+                this.gamePlay();
+            } 
+        }, this.state.gameSettingSelect.delay);
     }
-    gameStart(name){
-        if(!name.length) {
+    gameStart(){
+        if(this.state.btnname === 'Play again' && this.state.gameStart === false) {
+            this.setState({
+                fieldarray: new Array(25).fill(0),
+                message: '',
+                index: 0,
+                gameStart: true,
+                playerScore: 0,
+                computerScore: 0
+            })
+        }
+        if(!this.state.playerName.length) {
             this.setState({
                 message: 'Please write your name'
             });
@@ -95,23 +152,7 @@ class Game extends React.Component {
             results
         });
         setTimeout(() => {
-            this.fieldChange()
-            this.setState({
-                timerBeforeGame: true
-            })
-            setTimeout(() => {
-                if(this.state.fieldarray[this.state.results[this.state.index]] === 1) {
-                    let arr = this.state.fieldarray;
-                    arr[this.state.results[this.state.index]] = 3;
-                    this.setState({
-                        fieldarray: arr
-                    })
-                    console.log("next red")
-                }
-                this.setState({
-                    isTimerWas: true
-                })
-            }, this.state.gameSettingSelect.delay)
+            this.gamePlay();
         }, this.state.gameSettingSelect.delay);
     }  
 }

@@ -9,7 +9,7 @@ class Controls extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.gameStart = this.gameStart.bind(this);
         this.state = {
-            playerName: ''
+            
         }
     }
     render(props) {
@@ -21,17 +21,17 @@ class Controls extends React.Component {
                 </div>
                 <div className="play-btn" onClick={this.gameStart}>
                     <a href="#">
-                        Play
+                        {this.props.btnname}
                     </a>
                 </div>
             </div>
         );
     }
     gameStart() {
-        this.props.gameStart(this.state.playerName);
+        this.props.gameStart();
     }
     handleChange(event) {
-        this.setState({playerName: event.target.value});
+        this.props.handleChange(event.target.value)
     }
     renderField(name) {
         this.props.renderField(name);
