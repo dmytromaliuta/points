@@ -25,7 +25,7 @@ class App extends React.Component {
   getLeader() {
     axios.get(`https://starnavi-frontend-test-task.herokuapp.com/winners`)
       .then(res => {
-        const winners = res.data.reverse();;
+        const winners = res.data.reverse().splice(0, 10);
         winners.map((item) => {
             let dateMilisec = Date.parse(item.date);
             let newDate = new Date(dateMilisec);
