@@ -17,7 +17,7 @@ class FieldItem extends React.Component {
         }
         return (
             <div className="fieldItem" style={style} onClick={this.handleClick}>
-                {this.props.index}
+                
             </div>
         );
     }

@@ -6,10 +6,10 @@ class LeaderInfo extends React.Component {
         return (
             <div className="leader-info clearfix">
                 <div className="name">
-                    User Name
+                    {this.props.name}
                 </div>
                 <div className="time">
-                    Date and Time
+                    {this.props.time}
                 </div>
             </div>
         );

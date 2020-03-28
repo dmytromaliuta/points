@@ -19,7 +19,7 @@ class Controls extends React.Component {
                 <div className="inputname">
                     <input type="text" placeholder="Enter your name" onChange={this.handleChange} />
                 </div>
-                <div className="play-btn" onClick={this.gameStart}>
+                <div className="play-btn" onClick={(event) => this.gameStart(event)}>
                     <a href="#">
                         {this.props.btnname}
                     </a>
@@ -27,7 +27,8 @@ class Controls extends React.Component {
             </div>
         );
     }
-    gameStart() {
+    gameStart(event) {
+        event.preventDefault();
         this.props.gameStart();
     }
     handleChange(event) {

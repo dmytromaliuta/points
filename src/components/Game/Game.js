@@ -2,6 +2,7 @@ import React from 'react';
 import './Game.css';
 import Controls from '../Controls/Controls';
 import GameField from '../GameField/GameField'
+import axios from 'axios';
 
 class Game extends React.Component {
     constructor(props) {
@@ -19,7 +20,9 @@ class Game extends React.Component {
             fieldarray: new Array(25).fill(0),
             message: '',
             playerName: '',
+            winners: [],
             index: 0,
+            dateOfWon: '',
             btnname: 'Play',
             gameStart: false,
             playerScore: 0,
@@ -47,6 +50,10 @@ class Game extends React.Component {
             gameStart: false,
             message: '',
             btnname: 'Play',
+            winner: '',
+            playerScore: 0,
+            computerScore: 0,
+            index: 0,
             gameSettingSelect: this.props.gamesetting[name],
             fieldarray: new Array(length*length).fill(0),
         });
@@ -57,7 +64,6 @@ class Game extends React.Component {
         })
     }
     handleClick(index){
-        console.log("ads");
         if(!this.state.gameStart) return;
         if(this.state.fieldarray[this.state.results[this.state.index]] === 2 || this.state.fieldarray[this.state.results[this.state.index]] === 3) return;
         let arr = this.state.fieldarray;
@@ -81,22 +87,30 @@ class Game extends React.Component {
     gamePlay(){
         let limit = this.state.gameSettingSelect.field;
         limit = Math.round(limit*limit/2) - 1;
-        console.log(limit)
         if(this.state.playerScore > limit){
-            console.log("plater")
             this.setState({
-                message: this.state.playerName + " won",
-                btnname: 'Play again',
-                gameStart: false
-            })
-            return
+                gameStart: false,
+                winner: this.state.playerName
+            });
         }
         if(this.state.computerScore > limit){
-            console.log("pc")
             this.setState({
-                message: "Computer Ai won",
+                gameStart: false,
+                winner: 'Computer AI'
+            });
+        }
+        if(!this.state.gameStart) {
+            this.setState({
+                message: this.state.winner + " won",
                 btnname: 'Play again',
-                gameStart: false
+                dateOfWon: new Date()
+            });
+            axios.post(`https://starnavi-frontend-test-task.herokuapp.com/winners`, {
+                winner: this.state.winner,
+                date: this.state.dateOfWon
+            })
+            .then(res => {
+                this.props.getLeader();
             })
             return
         }
@@ -126,9 +140,16 @@ class Game extends React.Component {
         }, this.state.gameSettingSelect.delay);
     }
     gameStart(){
-        if(this.state.btnname === 'Play again' && this.state.gameStart === false) {
+        if(this.state.btnname === 'Play again') {
             this.setState({
-                fieldarray: new Array(25).fill(0),
+                btnname: 'Play'
+            })
+            return;
+        }
+        if(this.state.gameStart) return;
+        if(this.state.gameStart === false) {
+            this.setState({
+                fieldarray: new Array(this.state.gameSettingSelect.field * this.state.gameSettingSelect.field).fill(0),
                 message: '',
                 index: 0,
                 gameStart: true,
@@ -142,7 +163,6 @@ class Game extends React.Component {
             });
             return;
         }
-        //Набір випадкових чисел
         let i, arr = [], results = [];
         for (i = 0; i <= this.state.fieldarray.length - 1; i++ ) arr.push(i);
         for (i = 0; i < this.state.fieldarray.length; i++) results.push(arr.splice(Math.floor(Math.random() * (arr.length)), 1)[0]);
