@@ -159,7 +159,8 @@ class Game extends React.Component {
         }
         if(!this.state.playerName.length) {
             this.setState({
-                message: 'Please write your name'
+                message: 'Please write your name',
+                gameStart: false
             });
             return;
         }
