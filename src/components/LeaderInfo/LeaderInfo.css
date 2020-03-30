@@ -11,6 +11,8 @@
 }
 .leader-info .name {
     float: left;
+    width: 197px;
+    overflow: hidden;
 }
 .leader-info .time {
     float: right;
